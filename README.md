@@ -18,7 +18,8 @@ The resulting url will be: `https://my-api.com/v1/first/try/2?noListed=hello`
 ## Installation
 Simply checkout this repo and import the library in Android Studio.
 
-Gradle coming soon.
+### Gradle:
+Follow instructions on https://jitpack.io/#alexfacciorusso/urc/1.0 .
 
 ## FAQ
 #### Why this library uses two classes (`Urc` and `UrcGenerator`) to build the Url/Uri?
