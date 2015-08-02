@@ -56,7 +56,7 @@ public class Urc {
      *
      * @see com.alexfacciorusso.urc.Urc.UrcGenerator
      */
-    private UrcGenerator fromEndpoint(String path) {
+    public UrcGenerator fromEndpoint(String path) {
         return new UrcGenerator(path);
     }
 
@@ -126,7 +126,7 @@ public class Urc {
          *
          * @return the final uri/url
          */
-        private String build() {
+        public String build() {
             Matcher m = ABSTRACT_PATTERN.matcher(mEndpoint);
             StringBuffer sb = new StringBuffer(mEndpoint.length());
             while (m.find()) {
