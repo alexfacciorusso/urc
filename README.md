@@ -16,7 +16,7 @@ The resulting url will be: `https://my-api.com/v1/first/try/2?noListed=hello`
 **Note:** The query parameter generation is enabled by default. It can be disabled by the `.setQueryParametersEnabled(boolean)` method in the `UrcGenerator` class.
 
 ## Installation
-### As Library
+### As library
 Simply checkout this repo and import the library in Android Studio.
 
 ### As Gradle dependency
