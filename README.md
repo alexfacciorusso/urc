@@ -16,10 +16,12 @@ The resulting url will be: `https://my-api.com/v1/first/try/2?noListed=hello`
 **Note:** The query parameter generation is enabled by default. It can be disabled by the `.setQueryParametersEnabled(boolean)` method in the `UrcGenerator` class.
 
 ## Installation
+### As Library
 Simply checkout this repo and import the library in Android Studio.
 
-### Gradle:
-Follow instructions on https://jitpack.io/#alexfacciorusso/urc/1.0 .
+### As Gradle dependency
+Follow instructions on https://jitpack.io/#alexfacciorusso/urc (go on that link
+and then click on "Get it" button near the latest release).
 
 ## FAQ
 #### Why this library uses two classes (`Urc` and `UrcGenerator`) to build the Url/Uri?
