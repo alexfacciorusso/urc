@@ -4,8 +4,8 @@ Uniform Resource Creator. An Android (working for Java-generic) library that hel
 The path syntax is taken from Slim framework, so it is in the form of `/static/:argument`.
 
 ## Example
-    Urc google = Urc.with("https://my-api.com/v1");
-    google.fromEndpoint("/:firstArgument/try/:second")
+    Urc myApi = Urc.with("https://my-api.com/v1");
+    myApi.fromEndpoint("/:firstArgument/try/:second")
           .addParameter("firstArgument", "first")
           .addParameter("second", 2)
           .addParameter("noListed", "hello")
