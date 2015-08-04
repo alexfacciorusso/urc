@@ -1,4 +1,7 @@
 # Urc
+![https://jitpack.io/#alexfacciorusso/urc](https://img.shields.io/github/release/alexfacciorusso/urc.svg?label=JitPack)
+![](https://img.shields.io/github/stars/alexfacciorusso/urc.svg)
+
 Uniform Resource Creator. An Android (working for Java-generic) library that helps user to create URLs for RESTful apis.
 
 The path syntax is taken from Slim framework, so it is in the form of `/static/:argument`.
@@ -6,10 +9,10 @@ The path syntax is taken from Slim framework, so it is in the form of `/static/:
 ## Example
     Urc myApi = Urc.with("https://my-api.com/v1");
     myApi.fromEndpoint("/:firstArgument/try/:second")
-          .addParameter("firstArgument", "first")
-          .addParameter("second", 2)
-          .addParameter("noListed", "hello")
-          .build();
+         .addParameter("firstArgument", "first")
+         .addParameter("second", 2)
+         .addParameter("noListed", "hello")
+         .build();
 
 The resulting url will be: `https://my-api.com/v1/first/try/2?noListed=hello`
 
