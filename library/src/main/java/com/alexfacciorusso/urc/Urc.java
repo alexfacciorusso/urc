@@ -39,14 +39,14 @@ public class Urc {
      *     The path syntax is taken from Slim framework, so it is in the form of {@code '/static/:argument' } .
      * </p>
      *
-     * <h3>Example:</h3>
+     * <b>Example:</b>
      * <pre>
-     *     Urc google = Urc.with("https://google.com");
-     *
-     *     google.fromEndpoint("/:firstArgument/try/:second")
-     *           .addParameter("firstArgument", 1)
-     *           .addParameter("second", 2)
-     *           .build();
+     *     Urc myApi = Urc.with("https://my-api.com/v1");
+     *     myApi.fromEndpoint("/:firstArgument/try/:second")
+     *          .addParameter("firstArgument", "first")
+     *          .addParameter("second", 2)
+     *          .addParameter("noListed", "hello")
+     *          .build();
      * </pre>
      *
      * The result url will be: {@code https://google.com/1/try/2 }
