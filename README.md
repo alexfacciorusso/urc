@@ -1,8 +1,6 @@
 # Urc
-<a href="https://jitpack.io/#alexfacciorusso/urc">
-    <img src="https://img.shields.io/github/release/alexfacciorusso/urc.svg?label=JitPack" alt="JitPack release">
-</a>
-![](https://img.shields.io/github/stars/alexfacciorusso/urc.svg)
+[![JitPack](https://img.shields.io/github/release/alexfacciorusso/urc.svg?label=JitPack)](https://jitpack.io/#alexfacciorusso/urc)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Urc-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/2240)
 
 Uniform Resource Creator. An Android (working for Java-generic) library that helps user to create URLs for RESTful apis.
 
