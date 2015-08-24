@@ -1,1 +1,1 @@
-include ':library', ':urcsample'
+include ':library', ':sample'
