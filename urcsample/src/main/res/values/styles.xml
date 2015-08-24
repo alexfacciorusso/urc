@@ -1,0 +1,11 @@
+<resources>
+
+    <style name="Theme.UrcSample" parent="Base.Theme.UrcSample" />
+
+    <style name="Base.Theme.UrcSample" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">#9f2c23</item>
+    </style>
+
+</resources>

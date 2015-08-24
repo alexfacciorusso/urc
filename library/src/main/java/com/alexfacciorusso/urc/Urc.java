@@ -4,9 +4,7 @@ package com.alexfacciorusso.urc;
 import android.net.Uri;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,26 +15,28 @@ import java.util.regex.Pattern;
  *
  * @author Alex Facciorusso
  */
+@SuppressWarnings("unused")
 public class Urc {
-    private static final String TAG = "Urc";
-
     private String mBaseUrl;
 
     private Urc() {
     }
 
+    private Urc(String baseUrl) {
+        mBaseUrl = baseUrl;
+    }
+
     public static Urc with(String baseUrl) {
-        Urc urc = new Urc();
         if (baseUrl.endsWith("/")) {
-            baseUrl = baseUrl.substring(0, baseUrl.length()-1);
+            baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
         }
-        urc.setBaseUrl(baseUrl);
-        return urc;
+        return new Urc(baseUrl);
     }
 
     /**
      * <p>
-     *     The path syntax is taken from Slim framework, so it is in the form of {@code '/static/:argument' } .
+     * The endpoint syntax is taken from Slim framework, so it is in the form of {@code
+     * '/static/:argument' } .
      * </p>
      *
      * <b>Example:</b>
@@ -51,18 +51,12 @@ public class Urc {
      *
      * The result url will be: {@code https://google.com/1/try/2 }
      *
-     * @param path The path in :argument form
+     * @param endpoint The path in :argument form
      * @return An {@code UrcGenerator object}
-     *
      * @see com.alexfacciorusso.urc.Urc.UrcGenerator
      */
-    public UrcGenerator fromEndpoint(String path) {
-        return new UrcGenerator(path);
-    }
-
-
-    public void setBaseUrl(String baseUrl) {
-        mBaseUrl = baseUrl;
+    public UrcGenerator fromEndpoint(String endpoint) {
+        return new UrcGenerator(endpoint);
     }
 
     /**
@@ -73,29 +67,96 @@ public class Urc {
 
         private String mEndpoint;
         private Map<String, String> mParameters = new HashMap<>();
-        private Set<String> mUsedKeys = new HashSet<>();
-        private boolean mQueryParametersEnabled = true;
+        private Map<String, String> mQueryParameters = new HashMap<>();
+        private Map<String, String> mPathParameters = new HashMap<>();
+        private boolean mIgnoreUnmatchedParameters = false;
 
         public UrcGenerator(String endpoint) {
             mEndpoint = endpoint;
         }
 
         /**
-         * Add a parameter to Uri. If {@code key} is found as :parameter in the given path, then will
-         * be replaced to that parameter. Else:
+         * Add a query parameter to Uri. Parameters given by this method will overwrite eventual
+         * not matched parameters given by {@link #addParameter(String, String)}
+         * if {@link #ignoreUnmatchedParameters()} is not used.
+         *
+         * @param key   the parameter's key
+         * @param value the parameter's content
+         * @return the current instance of {@link com.alexfacciorusso.urc.Urc.UrcGenerator}
+         * @see #addParameter(String, String)
+         */
+        public UrcGenerator addQueryParameter(String key, String value) {
+            mQueryParameters.put(key, Uri.encode(value));
+
+            return this;
+        }
+
+
+        /**
+         * @see #addQueryParameter(String, String)
+         */
+        public UrcGenerator addQueryParameter(String key, int value) {
+            mQueryParameters.put(key, String.valueOf(value));
+            return this;
+        }
+
+
+        /**
+         * @see #addQueryParameter(String, String)
+         */
+        public UrcGenerator addQueryParameter(String key, Object value) {
+            mQueryParameters.put(key, value.toString());
+            return this;
+        }
+
+        /**
+         * Add a parameter to Uri. If {@code key} is found as :parameter in the given path, then
+         * will be replaced to that parameter. Else it will be silently ignored.
+         *
+         * @param key   the parameter's key
+         * @param value the parameter's content
+         * @return the current instance of {@link com.alexfacciorusso.urc.Urc.UrcGenerator}
+         * @see #addParameter(String, String)
+         */
+        public UrcGenerator addPathParameter(String key, String value) {
+            mPathParameters.put(key, Uri.encode(value));
+            return this;
+        }
+
+        /**
+         * @see #addPathParameter(String, String)
+         */
+        public UrcGenerator addPathParameter(String key, int value) {
+            mPathParameters.put(key, String.valueOf(value));
+            return this;
+        }
+
+        /**
+         * @see #addPathParameter(String, String)
+         */
+        public UrcGenerator addPathParameter(String key, Object value) {
+            mPathParameters.put(key, value.toString());
+            return this;
+        }
+
+        /**
+         * Add a parameter to Uri. If {@code key} is found as :parameter in the given path, then
+         * will be replaced to that parameter. Else:
          * <ul>
-         *     <li>Default behavior: the parameter will be added as query parameter (e.g. ?key=value)</li>
-         *     <li>If {@link #setQueryParametersEnabled(boolean)} set to {@code false},
-         *     the unmatched parameter will be ignored.</li>
-         * </ul>
-         * @param key the parameter's key
+         * <li>Default behavior: the parameter will be added as query parameter (e.g.
+         * ?key=value)</li>
+         * <li>If {@link #ignoreUnmatchedParameters()} used, the unmatched parameter will be
+         * ignored.</li></ul>
+         *
+         * @param key   the parameter's key
          * @param value the parameter's content
          * @return the current instance of {@link com.alexfacciorusso.urc.Urc.UrcGenerator}
          */
         public UrcGenerator addParameter(String key, String value) {
-            mParameters.put(key, value);
+            mParameters.put(key, Uri.encode(value));
             return this;
         }
+
 
         /**
          * @see #addParameter(String, String)
@@ -115,9 +176,23 @@ public class Urc {
          * Enable or disable the query parameters for unmatched parameters.
          *
          * @see #addParameter(String, String)
+         * @deprecated You <b>MUST</b> use the {@link #ignoreUnmatchedParameters()} method.
          */
+        @Deprecated
         public UrcGenerator setQueryParametersEnabled(boolean enabled) {
-            mQueryParametersEnabled = enabled;
+            mIgnoreUnmatchedParameters = !enabled;
+            return this;
+        }
+
+        /**
+         * Disable the automatic query parameters generation for unmatched parameters added with
+         * {@link #addParameter(String, String)}.
+         *
+         * <b>Note: </b>This method doesn't change the behavior of parameters added with
+         * {@link #addPathParameter(String, String)} or {@link #addQueryParameter(String, String)}.
+         */
+        public UrcGenerator ignoreUnmatchedParameters() {
+            mIgnoreUnmatchedParameters = true;
             return this;
         }
 
@@ -131,18 +206,29 @@ public class Urc {
             StringBuffer sb = new StringBuffer(mEndpoint.length());
             while (m.find()) {
                 String key = m.group(1);
-                if (mParameters.containsKey(key)) {
-                    mUsedKeys.add(key);
-                    m.appendReplacement(sb, Matcher.quoteReplacement(mParameters.get(key)));
+                if (mPathParameters.containsKey(key)) {
+                    m.appendReplacement(sb, Matcher.quoteReplacement(mPathParameters.get(key)));
                 } else {
-                    m.appendReplacement(sb, key);
+                    if (mParameters.containsKey(key)) {
+                        m.appendReplacement(sb, Matcher.quoteReplacement(mParameters.get(key)));
+                    } else {
+                        m.appendReplacement(sb, key);
+                    }
                 }
-            }
-            for (String key : mUsedKeys) {
-                mParameters.remove(key);
+
+                if (mParameters.containsKey(key)) {
+                    mParameters.remove(key);
+                }
             }
 
             m.appendTail(sb);
+
+            // Query parameters has higher priority than unmatched auto parameters.
+            for (String key : mQueryParameters.keySet()) {
+                if (mParameters.containsKey(key)) {
+                    mParameters.remove(key);
+                }
+            }
 
             String finalPath = sb.toString();
             if (!finalPath.startsWith("/")) {
@@ -152,7 +238,14 @@ public class Urc {
             Uri uri = Uri.parse(mBaseUrl + finalPath);
             Uri.Builder builder = uri.buildUpon();
 
-            if (mQueryParametersEnabled) {
+            for (Map.Entry<String, String> entry : mQueryParameters.entrySet()) {
+                builder.appendQueryParameter(entry.getKey(), entry.getValue());
+                if (mParameters.containsKey(entry.getKey())) {
+                    mParameters.remove(entry.getKey());
+                }
+            }
+
+            if (!mIgnoreUnmatchedParameters) {
                 for (Map.Entry<String, String> entry : mParameters.entrySet()) {
                     builder.appendQueryParameter(entry.getKey(), entry.getValue());
                 }
